@@ -92,3 +92,22 @@ $ kubectl create secret generic djapp-secret \
 ```sh
 $ kubectl apply -f djapp-v1.yml
 ```
+Для организации внешнего доступа к проекту по доменному имени используется контроллер Ingress.  
+Добавьте необходимые доменные имена в файле `djapp-v1.yml`
+```sh
+...
+- name: ALLOWED_HOSTS
+  value: "127.0.0.1,localhost,192.168.49.2,star-burger.test"
+...
+```
+и файле правил `djapp-ingress.yml`
+```sh
+...
+rules:
+- host: star-burger.test
+...
+```
+и запустите правила в работу
+```sh
+$ kubectl apply -f djapp-ingress.yml
+```
