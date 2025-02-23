@@ -111,3 +111,12 @@ rules:
 ```sh
 $ kubectl apply -f djapp-ingress.yml
 ```
+Добавление регулярной задачи очистки сессий раз месяц
+```sh
+$ kubectl apply -f djapp-clearsessions-cron.yml
+```
+Можно вручную запустить очистку сессий вне расписания
+```sh
+$ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions-onetime
+$ kubectl delete job djapp-clearsessions-onetime
+```
