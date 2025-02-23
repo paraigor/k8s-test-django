@@ -14,11 +14,6 @@ spec:
           - name: djapp-container
             image: django_app:latest
             imagePullPolicy: IfNotPresent
-            env:
-            - name: DEBUG
-              value: "True"
-            - name: ALLOWED_HOSTS
-              value: "127.0.0.1,localhost,192.168.49.2,star-burger.test"
             envFrom:
             - secretRef:
                 name: djapp-secret

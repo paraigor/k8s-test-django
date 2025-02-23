@@ -76,17 +76,24 @@ $ docker compose build web
 
 `DATABASE_URL` -- адрес для подключения к базе данных PostgreSQL. Другие СУБД сайт не поддерживает. [Формат записи](https://github.com/jacobian/dj-database-url#url-schema).
 
-## Размещение проекта в кластере Kubernetes
-Создайте образ проекта и загрузите его в кластер
+## Размещение проекта в локальном кластере Kubernetes
+Для размещения проекта понадобится локальный кластер [`minikube`](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download). А также установленные инструменты: [`kubectl`](https://kubernetes.io/docs/tasks/tools/) и [`helm`](https://helm.sh/).  
+Создайте образ проекта и загрузите его в кластер.
 ```sh
 $ docker compose build
 $ minikube image load django_app:latest
 ```
-Перед запуском проекта необходимо в кластере создать объект `secret` с чувствительными данными.
+Создайте под (pod) postgresql с указанием базы данных логина и пароля, которые будут использоваться проектом. В выводе комманды будет указан адрес сервера `postgre` - `djapp-db-postgresql.default.svc.cluster.local`
 ```sh
-$ kubectl create secret generic djapp-secret \
-  --from-literal=SECRET_KEY='xxXXxxxxXxxxXXxXxxx' \
-  --from-literal=DATABASE_URL='postgres://user:pass@host:port/base'
+$ helm install djapp-db oci://registry-1.docker.io/bitnamicharts/postgresql --set
+global.postgresql.auth.username=user --set
+global.postgresql.auth.password=pass --set
+global.postgresql.auth.database=base
+```
+Перед запуском проекта необходимо в кластере создать объект `secret` с чувствительными данными.  
+Отредактируйте файл `kubernetes\djapp-secret.yml` и выполните команду
+```sh
+$ kubectl apply -f djapp-secret.yml
 ```
 Затем запустить проект используя манифест файл из папки `kubernetes`
 ```sh
@@ -111,6 +118,15 @@ rules:
 ```sh
 $ kubectl apply -f djapp-ingress.yml
 ```
+Для первоначального заполнения и при обновлении базы данных, миграцию выполнить коммандой
+```sh
+$ kubectl apply -f djapp-migrate.yml
+```
+Для создания суперпользователя подключаемся к любому из запущенных подов
+```sh
+$ kubectl exec pod/djapp-deploy-[id] -it -- bash
+root@pod$ python manage.py createsuperuser
+```
 Добавление регулярной задачи очистки сессий раз месяц
 ```sh
 $ kubectl apply -f djapp-clearsessions-cron.yml
@@ -118,9 +134,4 @@ $ kubectl apply -f djapp-clearsessions-cron.yml
 Можно вручную запустить очистку сессий вне расписания
 ```sh
 $ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions-onetime
-$ kubectl delete job djapp-clearsessions-onetime
-```
-При обновлении проекта и базы данных в частности, миграцию можно выполнить коммандой
-```sh
-$ kubectl apply -f djapp-migrate.yml
 ```
