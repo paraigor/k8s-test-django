@@ -120,3 +120,7 @@ $ kubectl apply -f djapp-clearsessions-cron.yml
 $ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions-onetime
 $ kubectl delete job djapp-clearsessions-onetime
 ```
+При обновлении проекта и базы данных в частности, миграцию можно выполнить коммандой
+```sh
+$ kubectl apply -f djapp-migrate.yml
+```

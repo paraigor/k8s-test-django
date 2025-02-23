@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: djapp-migrate
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: djapp-container
+        image: django_app:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DEBUG
+          value: "True"
+        - name: ALLOWED_HOSTS
+          value: "127.0.0.1,localhost,192.168.49.2,star-burger.test"
+        envFrom:
+        - secretRef:
+            name: djapp-secret
+        command: ["python", "manage.py", "migrate"]
+      restartPolicy: Never
