@@ -95,9 +95,10 @@ global.postgresql.auth.database=base
 ```sh
 $ kubectl apply -f djapp-secret.yml
 ```
-Затем запустить проект используя манифест файл из папки `kubernetes`
+Затем запустить проект используя манифест файлы из папки `kubernetes`
 ```sh
-$ kubectl apply -f djapp-v1.yml
+$ kubectl apply -f djapp-deploy.yml
+$ kubectl apply -f djapp-service.yml
 ```
 Для организации внешнего доступа к проекту по доменному имени используется контроллер Ingress.  
 Добавьте необходимые доменные имена в файле `kubernetes\djapp-secret.yml`
