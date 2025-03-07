@@ -21,18 +21,3 @@ spec:
         envFrom:
         - secretRef:
             name: djapp-secret
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: djapp-service
-  labels:
-    app: django
-spec:
-  selector:
-    entity: djapp-pod
-  ports:
-  - name: app-listner
-    port: 80
-    targetPort: 80
