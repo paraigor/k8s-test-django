@@ -144,3 +144,12 @@ $ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions
 Схему внешнего доступа к приложениям можно посмотреть на примере сервера `nginx`.  
 Используя файлы манифестов из папки `yc-sirius/edu-festive-ganguly` создайте `pod`, а затем `service` в приложении Lens Desktop или с помощью инструмента `kubectl`.
 
+Для работы проекта понадобится база данных.  
+Публично доступные базы PostgreSQL требуют защищенного соединения.  
+Добавить сертификат для подключения к БД можно через манифест `secret`.  
+Добавьте содержимое файла сертификата, в формате `Base64 encoded`, в файл манифеста `pg-root-cert.yml` и запустите
+```sh
+$ kubectl apply -f pg-root-cert.yml
+```
+Чтобы проверить подключение к внешнему серверу PostgreSQL, запустите `pod` с Ubuntu с помощью манифеста `sample-psql-test.yml`.
+

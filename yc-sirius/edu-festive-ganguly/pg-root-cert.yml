@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pg-root-cert
+  namespace: edu-festive-ganguly
+data:
+  root.crt: >-
+    xxXXXxxXXxXxxxxxxxXXxxXXxxxXXX
+type: Opaque

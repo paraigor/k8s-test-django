@@ -19,3 +19,4 @@ spec:
     - name: pg-root-cert
       secret:
         secretName: pg-root-cert
+        defaultMode: 0o600
