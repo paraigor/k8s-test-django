@@ -101,7 +101,7 @@ $ kubectl apply -f djapp-deploy.yml
 $ kubectl apply -f djapp-service.yml
 ```
 Для организации внешнего доступа к проекту по доменному имени используется контроллер Ingress.  
-Добавьте необходимые доменные имена в файле `kubernetes\djapp-secret.yml`
+Добавьте необходимые доменные имена в файле `kubernetes/djapp-secret.yml`
 ```sh
 ...
 ALLOWED_HOSTS: '127.0.0.1,localhost,192.168.49.2,star-burger.test'
@@ -135,3 +135,12 @@ $ kubectl apply -f djapp-clearsessions-cron.yml
 ```sh
 $ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions-onetime
 ```
+
+## Как задеплоить код на внешнем кластере
+Создать кластер и получить к нему доступ.  
+Будет выделено персональное пространство имен `namespace`. Его использовать при создании объектов через манифесты.  
+Такжен будет включен балансировщик нагрузки приложений `Application Load Balancer` с HTTP-роутером, перенаправляющим запросы с доменного имени на `NodePort`.  
+
+Схему внешнего доступа к приложениям можно посмотреть на примере сервера `nginx`.  
+Используя файлы манифестов из папки `yc-sirius/edu-festive-ganguly` создайте `pod`, а затем `service` в приложении Lens Desktop или с помощью инструмента `kubectl`.
+
