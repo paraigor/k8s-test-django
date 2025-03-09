@@ -76,6 +76,20 @@ $ docker compose build web
 
 `DATABASE_URL` -- адрес для подключения к базе данных PostgreSQL. Другие СУБД сайт не поддерживает. [Формат записи](https://github.com/jacobian/dj-database-url#url-schema).
 
+## Сборка и публикация docker-образа
+Получите хеш текущего коммита. Хеш будет использоваться в качестве версии образа.
+```sh
+$ export commit=$(git rev-parse HEAD)
+```
+Создайте образ.
+```sh
+$ docker build -t [dockerhub-username]/djapp:$commit .
+```
+Загрузите созданный образ на Docker Hub.
+```sh
+$ docker push [dockerhub-username]/djapp:$commit
+```
+
 ## Размещение проекта в локальном кластере Kubernetes
 Для размещения проекта понадобится локальный кластер [`minikube`](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download). А также установленные инструменты: [`kubectl`](https://kubernetes.io/docs/tasks/tools/) и [`helm`](https://helm.sh/).  
 Создайте образ проекта и загрузите его в кластер.
@@ -136,13 +150,13 @@ $ kubectl apply -f djapp-clearsessions-cron.yml
 $ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions-onetime
 ```
 
-## Как задеплоить код на внешнем кластере
+## Размещение проекта на внешнем кластере
 Создать кластер и получить к нему доступ.  
 Будет выделено персональное пространство имен `namespace`. Его использовать при создании объектов через манифесты.  
 Такжен будет включен балансировщик нагрузки приложений `Application Load Balancer` с HTTP-роутером, перенаправляющим запросы с доменного имени на `NodePort`.  
 
 Схему внешнего доступа к приложениям можно посмотреть на примере сервера `nginx`.  
-Используя файлы манифестов из папки `yc-sirius/edu-festive-ganguly` создайте `pod`, а затем `service` в приложении Lens Desktop или с помощью инструмента `kubectl`.
+Используя файлы манифестов из папки `yc-sirius/edu-festive-ganguly` создайте `pod`(`sample-pod.yml`), а затем `service`(`sample-service.yml`) в приложении Lens Desktop или с помощью инструмента `kubectl`.
 
 Для работы проекта понадобится база данных.  
 Публично доступные базы PostgreSQL требуют защищенного соединения.  
