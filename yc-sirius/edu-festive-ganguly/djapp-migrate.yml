@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: djapp-migrate
+  namespace: edu-festive-ganguly
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: djapp-container
+        image: paraigor/djapp:cc80a937c736b60a56c9407102fe4c574969eca6
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: djapp-secret
+        command: ["python", "manage.py", "migrate"]
+      restartPolicy: Never

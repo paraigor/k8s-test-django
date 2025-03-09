@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djapp-deploy
+  namespace: edu-festive-ganguly
+  labels:
+    project: django
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      entity: djapp-pod
+  template:
+    metadata:
+      labels:
+        entity: djapp-pod
+    spec:
+      containers:
+      - name: djapp-container
+        image: paraigor/djapp:cc80a937c736b60a56c9407102fe4c574969eca6
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: djapp-secret
+        volumeMounts:
+        - mountPath: /root/.postgresql
+          name: pg-root-cert
+          readOnly: true
+      volumes:
+      - name: pg-root-cert
+        secret:
+          secretName: pg-root-cert
+          defaultMode: 0o600

@@ -151,8 +151,7 @@ $ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions
 ```
 
 ## Размещение проекта на внешнем кластере
-Создать кластер и получить к нему доступ.  
-Будет выделено персональное пространство имен `namespace`. Его использовать при создании объектов через манифесты.  
+В кластере будет выделено персональное пространство имен `namespace`. Его использовать при создании объектов через манифесты.  
 Такжен будет включен балансировщик нагрузки приложений `Application Load Balancer` с HTTP-роутером, перенаправляющим запросы с доменного имени на `NodePort`.  
 
 Схему внешнего доступа к приложениям можно посмотреть на примере сервера `nginx`.  
@@ -167,3 +166,26 @@ $ kubectl apply -f pg-root-cert.yml
 ```
 Чтобы проверить подключение к внешнему серверу PostgreSQL, запустите `pod` с Ubuntu с помощью манифеста `sample-psql-test.yml`.
 
+Для размещения проекта применяем файлы манифестов из папки `yc-sirius\edu-festive-ganguly`:  
+Подготовьте переменные окружения через манифест секретов. 
+```sh
+$ kubectl apply -f djapp-secret.yml
+```
+Разворачиваем `deployment`.
+```sh
+$ kubectl apply -f djapp-deploy.yml
+$ kubectl apply -f djapp-service.yml
+```
+Для первоначального заполнения и при обновлении базы данных, выполняем миграцию.
+```sh
+$ kubectl apply -f djapp-migrate.yml
+```
+Для создания суперпользователя подключаемся к любому из запущенных подов.
+```sh
+$ kubectl exec pod/djapp-deploy-[id] -it -- bash
+root@pod$ python manage.py createsuperuser
+```
+Добавляем регулярную задачу очистки сессий раз месяц
+```sh
+$ kubectl apply -f djapp-clearsessions-cron.yml
+```
