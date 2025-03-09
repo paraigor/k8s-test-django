@@ -152,7 +152,9 @@ $ kubectl create job --from=cronjob/djapp-clearsessions-cron djapp-clearsessions
 
 ## Размещение проекта на внешнем кластере
 В кластере будет выделено персональное пространство имен `namespace`. Его использовать при создании объектов через манифесты.  
-Такжен будет включен балансировщик нагрузки приложений `Application Load Balancer` с HTTP-роутером, перенаправляющим запросы с доменного имени на `NodePort`.  
+Такжен будет включен балансировщик нагрузки приложений `Application Load Balancer` с HTTP-роутером, перенаправляющим запросы с доменного имени на `NodePort`.
+
+Подробное описание выделенных ресурсов кластера можнопосмотреть [здесь](https://sirius-env-registry.website.yandexcloud.net/edu-festive-ganguly.html)
 
 Схему внешнего доступа к приложениям можно посмотреть на примере сервера `nginx`.  
 Используя файлы манифестов из папки `yc-sirius/edu-festive-ganguly` создайте `pod`(`sample-pod.yml`), а затем `service`(`sample-service.yml`) в приложении Lens Desktop или с помощью инструмента `kubectl`.
@@ -189,3 +191,4 @@ root@pod$ python manage.py createsuperuser
 ```sh
 $ kubectl apply -f djapp-clearsessions-cron.yml
 ```
+[Пример развернутого проекта](https://edu-festive-ganguly.sirius-k8s.dvmn.org/admin/login/?next=/admin/)
